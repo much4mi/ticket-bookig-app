@@ -45,3 +45,18 @@ export const signout = async () => {
         throw new Error('Failed to signout');
     }
 };
+
+export const addStadium = async (stadiumFormData: FormData) => {
+    const response = await fetch(`${API_BASE_URL}/api/my-stadiums`, {
+        method: "POST",
+        body: stadiumFormData
+    });
+    
+    if (!response.ok) {
+        throw new Error('Failed to add stadium');
+    }
+    
+    return response.json();
+};
+
+    

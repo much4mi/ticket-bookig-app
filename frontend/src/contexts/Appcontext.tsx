@@ -1,22 +1,21 @@
 import React, { createContext, useContext, useState } from 'react';
 import Toast from '../components/Toast';
 
-
-type ToastMessage = {
+type ToastMessageType = {
     message: string;
-    type: "SUCCESS" | "ERROR"; 
+    type: "success" | "error"; // Updated to lowercase
 };
 
 type AppContextType = {
-    showToast: (toastMessage: ToastMessage) => void;
+    showToast: (toastMessage: ToastMessageType) => void;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [toast, setToast] = useState<ToastMessage | undefined>(undefined);
+    const [toast, setToast] = useState<ToastMessageType | undefined>(undefined);
 
-    const showToast = (toastMessage: ToastMessage) => {
+    const showToast = (toastMessage: ToastMessageType) => {
         setToast(toastMessage);
     };
 
@@ -32,3 +31,4 @@ export const useAppContext = () => {
     const context = useContext(AppContext);
     return context as AppContextType;
 };
+

@@ -2,12 +2,15 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import Layout from "./layouts/Layout";
 import Register from "./pages/Register";
 import Signin from "./pages/Signin";
+import AddStadium from "./pages/AddStadium";
+import { useAppContext } from "./contexts/Appcontext";
 
 const Home = () => <h1>Home Page</h1>;
 const About = () => <h1>About Page</h1>;
 const Contact = () => <h1>Contact Page</h1>;
 
 const App = () => {
+  const  isLoggedIn = useAppContext();
   return (
     <Router>
       <Routes>
@@ -19,10 +22,13 @@ const App = () => {
           </Layout>
           } />
 
+
 <Route path="/signin" element={<Layout>
           <Signin/>
           </Layout>
           } />
+          
+          {isLoggedIn &&(<><Route path ="/addStadium" element={<Layout><AddStadium/></Layout>}/></>)}
         <Route path="/about" element={<About></About>} />
         <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<Navigate to="/" replace />} />
