@@ -1,6 +1,9 @@
 
 import { RegisterFormData } from "./pages/Register";
 import { SigninFormData } from "./pages/Signin";
+import { StadiumType } from "../../backend/src/shared/Types";
+
+
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ||  "";
 
@@ -59,4 +62,12 @@ export const addStadium = async (stadiumFormData: FormData) => {
     return response.json();
 };
 
-    
+    export const fetchMyStadiums = async():Promise<StadiumType[]>=>{
+        const response = await fetch(`${API_BASE_URL}/api/my-stadiums`,{
+        
+        });
+        if (!response.ok) {
+            throw new Error('error fetching mystadiums');
+        }
+        return response.json();
+    }

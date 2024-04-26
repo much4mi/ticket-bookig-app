@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Signin from "./pages/Signin";
 import AddStadium from "./pages/AddStadium";
 import { useAppContext } from "./contexts/Appcontext";
+import Mystadiums from "./pages/Mystadiums";
 
 const Home = () => <h1>Home Page</h1>;
 const About = () => <h1>About Page</h1>;
@@ -27,8 +28,15 @@ const App = () => {
           <Signin/>
           </Layout>
           } />
+         
           
-          {isLoggedIn &&(<><Route path ="/addStadium" element={<Layout><AddStadium/></Layout>}/></>)}
+          {isLoggedIn &&(<><Route path ="/add-Stadium" element={<Layout><AddStadium/></Layout>}/>
+          <Route path="/stadium" element={<Layout>
+          <Mystadiums/>
+          </Layout>
+          } />
+          
+          </>)}
         <Route path="/about" element={<About></About>} />
         <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<Navigate to="/" replace />} />

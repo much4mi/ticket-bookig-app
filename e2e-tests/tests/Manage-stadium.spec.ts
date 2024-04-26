@@ -31,3 +31,24 @@ test("should allow user to add a stadium", async ({ page }) => {
   await expect(page.getByText("stadium saved!")).toBeVisible(); 
 });
 
+test("should allow the user display stadium",async({page})=>{
+  await page.goto(`${UI_URL}stadium`);
+  await page.getByRole("link",{name: "stadium"}).click();
+  await page.waitForSelector('text="My stadium"');
+  await expect(page.getByText("My stadium")).toBeVisible();
+  
+  await expect(page.getByText("Test Stadium")).toBeVisible();
+  await expect(page.getByText("This is description")).toBeVisible();
+
+  await expect(page.getByText("Test CityCity,Test Country")).toBeVisible();
+  await expect(page.getByText("arena")).toBeVisible();
+  await expect(page.getByText("$100 per game")).toBeVisible();
+  await expect(page.getByText("100 adults, 10 children")).toBeVisible();
+  await expect(page.getByText("4")).toBeVisible();
+
+
+  await expect(page.getByRole("link",{name:"view detail"})).toBeVisible();
+  await expect(page.getByRole("link",{name:"Add stadium"})).toBeVisible();
+
+
+})

@@ -1,7 +1,8 @@
 import cloudinary from 'cloudinary';
 import express, { Request, Response } from "express";
 import multer from "multer";
-import Stadium, { StadiumType } from '../models/Stadium';
+import Stadium from '../models/Stadium';
+import { StadiumType } from '../shared/Types';
 import { body } from 'express-validator';
 
 const router = express.Router();
@@ -49,6 +50,18 @@ router.post("/", [
     } catch (error) {
         console.log("Error creating stadium:", error);
         res.status(500).json({ message: "Something went wrong!" })
+    }
+});
+
+router.get("/" , async(req:Request,res:Response)=>{
+    
+    
+    try {
+        const stadiums = await Stadium.find();
+    res.json(stadiums);
+    } catch (error) {
+        res.status(500).json({message:"error fetching stadiums"})
+        
     }
 })
 
