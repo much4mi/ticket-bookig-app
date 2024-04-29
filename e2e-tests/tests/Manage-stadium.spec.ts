@@ -51,4 +51,20 @@ test("should allow the user display stadium",async({page})=>{
   await expect(page.getByRole("link",{name:"Add stadium"})).toBeVisible();
 
 
+});
+
+test("should allow edit stadium",async({page})=>{
+  await page.goto(`${UI_URL}stadium`);
+  await page.getByRole("link",{name: "stadium"}).click();
+  await page.getByRole("link",{name: "View Detail"}).click();
+  await page.waitForSelector('[name="name"]',{state:"attached"});
+  await expect(page.locator( '[name="name"]') ).toHaveValue("Talanta jamuhuri stadium");
+  await page.locator( '[name="name"]').fill("Talanta jamuhuri stadium");
+  await page.getByRole("button",{name:"Save "}).click();
+  await page.getByRole("button", { name: "save" }).click();
+  await expect(page.getByText("stadium saved!")).toBeVisible();
+
+  await page.reload( );
+  await expect(page.locator( '[name="name"]') ).toHaveValue("Talanta jamuhuri stadium");
+  await page.getByRole("button", { name: "save" }).click();
 })

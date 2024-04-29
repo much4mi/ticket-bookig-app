@@ -1,4 +1,5 @@
 
+
 import { RegisterFormData } from "./pages/Register";
 import { SigninFormData } from "./pages/Signin";
 import { StadiumType } from "../../backend/src/shared/Types";
@@ -62,12 +63,35 @@ export const addStadium = async (stadiumFormData: FormData) => {
     return response.json();
 };
 
-    export const fetchMyStadiums = async():Promise<StadiumType[]>=>{
-        const response = await fetch(`${API_BASE_URL}/api/my-stadiums`,{
-        
-        });
-        if (!response.ok) {
-            throw new Error('error fetching mystadiums');
-        }
-        return response.json();
+export const fetchMyStadiums = async():Promise<StadiumType[]>=>{
+    const response = await fetch(`${API_BASE_URL}/api/my-stadiums`,{
+       
+    });
+    if (!response.ok) {
+        throw new Error('error fetching mystadiums');
     }
+    return response.json();
+};
+
+export const fetchMyStadiumsById = async(stadiumId:string):Promise<StadiumType>=>{
+    const response = await fetch(`${API_BASE_URL}/api/my-stadiums/${stadiumId}`,{
+       
+    });
+    if (!response.ok) {
+        throw new Error('error fetching mystadiums');
+    }
+    return response.json();
+};
+
+
+export const updateMyStadiumsById = async (StadiumFormdata:FormData) => {
+    const response = await fetch(`${API_BASE_URL}/api/my-stadiums/${StadiumFormdata.get("stadiumId")}`, {
+
+        body: StadiumFormdata, 
+        method: "PUT"
+    });
+    if (!response.ok) {
+        throw new Error('Failed to updateStadium');
+    }
+    return response.json();
+};

@@ -29,14 +29,7 @@ router.post("/", [
         const newStadium: StadiumType = req.body;
 
         // Upload the images to cloudinary and get their URLs
-        const uploadPromises = imageFiles.map(async (image) => {
-            const b64 = Buffer.from(image.buffer).toString('base64');
-            const dataUrl = "data:" + image.mimetype + ";base64," + b64;
-            const result = await cloudinary.v2.uploader.upload(dataUrl);
-            return result.url;
-        });
-
-        const imageUrls = await Promise.all(uploadPromises);
+        const imageUrls = await uploadImageUrls(imageFiles);
         newStadium.imageUrls = imageUrls;
         newStadium.lastUpdated = new Date();
 
@@ -63,7 +56,57 @@ router.get("/" , async(req:Request,res:Response)=>{
         res.status(500).json({message:"error fetching stadiums"})
         
     }
+});
+
+router.get("/:id" , async(req:Request,res:Response)=>{
+    const id = req.params.id.toString();
+    try {
+        const stadium = await Stadium.findById(id);
+        res.json(stadium);
+        
+    } catch (error) {
+        res.status(500).json({message:"error fetching stadiums"})
+    }
+});
+
+router.put("/:stadiumId",upload.array("imageFiles"),async(req:Request,res:Response)=>{
+
+    try {
+        const updatedStadium:StadiumType=req.body
+        updatedStadium.lastUpdated= new  Date();
+
+        const stadium = await Stadium.findByIdAndUpdate({
+            _id : req.params.stadiumId
+        },updatedStadium,{new:true} ) ;
+        
+        if (!stadium){
+            return res.status(404)
+                .json({message:'Cannot find the stadium'});
+                };
+                const files = req.files as Array<Express.Multer.File>;
+                const updateImageUrls = await uploadImageUrls(files);
+
+                stadium.imageUrls=[...updateImageUrls,...(updatedStadium.imageUrls || [])];
+                await stadium.save();
+                res.status(201).json(stadium);
+    } catch (error) {
+        res.status(500).json({message:"something went wrongle"})
+    }
 })
 
-export default router;
+    
 
+
+async function uploadImageUrls(imageFiles: Express.Multer.File[]) {
+    const uploadPromises = imageFiles.map(async (image) => {
+        const b64 = Buffer.from(image.buffer).toString('base64');
+        const dataUrl = "data:" + image.mimetype + ";base64," + b64;
+        const result = await cloudinary.v2.uploader.upload(dataUrl);
+        return result.url;
+    });
+
+    const imageUrls = await Promise.all(uploadPromises);
+    return imageUrls;
+}
+
+export default router;

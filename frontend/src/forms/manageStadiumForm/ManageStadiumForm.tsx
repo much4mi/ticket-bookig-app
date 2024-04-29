@@ -4,6 +4,8 @@ import TypeSection from './TypeSection';
 import FacilitiesSection from './FacilitiesSection';
 import GuestSection from './GuestSection';
 import ImagesSection from './ImagesSection';
+import { StadiumType } from '../../../../backend/src/shared/Types';
+import { useEffect } from 'react';
 
 // Define the type for form data
 export type StadiumFormdata = {
@@ -16,21 +18,30 @@ export type StadiumFormdata = {
     starRating: number;
     facilities: string[];
     imageFiles: FileList;
+    imageUrls: string[];
     adultCount: number;
     childCount: number;
 };
 
 type Props = {
+    stadium?:StadiumType
     onSave: (stadiumFormData: FormData) => void;
     isLoading: boolean;
 };
 
-const ManageStadiumForm = ({ onSave, isLoading }: Props) => {
+const ManageStadiumForm = ({ onSave, isLoading,stadium }: Props) => {
     const formMethods = useForm<StadiumFormdata>();
-    const { handleSubmit } = formMethods;
+    const { handleSubmit,reset } = formMethods;
+
+    useEffect(()=>{
+        reset(stadium);
+    }, [stadium,reset])
 
     const onSubmit = handleSubmit((formDataJson: StadiumFormdata) => {
         const formData = new FormData();
+        if(stadium){
+            formData.append("stadiumId",String(stadium?._id));
+        }
 
         formData.append("name", formDataJson.name);
         formData.append("city", formDataJson.city);
@@ -45,6 +56,16 @@ const ManageStadiumForm = ({ onSave, isLoading }: Props) => {
         formDataJson.facilities.forEach((facility, index) => {
             formData.append(`facilities[${index}]`, facility);
         });
+
+        if(formDataJson.imageUrls){
+            formDataJson.imageUrls.forEach((url, index) => {
+                formData.append(`images[${index}]`, url);
+            })
+        }
+
+
+
+
 
         Array.from(formDataJson.imageFiles).forEach((imageFile) => {
             formData.append("imageFiles", imageFile);

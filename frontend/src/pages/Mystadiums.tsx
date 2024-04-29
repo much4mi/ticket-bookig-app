@@ -12,7 +12,7 @@ const Mystadiums = () => {
         }
     });
 
-    console.log("Stadium Data:", stadiumData); // Add this line to log stadiumData to the console
+    console.log("Stadium Data:", stadiumData); 
 
     if (!stadiumData) {
         return <span>no stadium data found</span>
@@ -22,11 +22,11 @@ const Mystadiums = () => {
         <div className="space-y-5">
             <span className="flex justify-between">
                 <h1 className="text-3xl font-bold">My stadium</h1>
-                <Link to="/add-myStadium" className="flex bg-blue-600 text-black text-xl font-bold p-2 hover:bg-blue-500">Add stadium</Link>
+                <Link to="/add-stadium" className="flex bg-blue-600 text-black text-xl font-bold p-2 hover:bg-blue-500">Add stadium</Link>
             </span>
-            <div className="grid grid-cols-1 gap-8">
+            <div className="grid grid-cols-1 gap-5">
                 {stadiumData.map((stadium) => (
-                    <div className="flex flex-cols justify-between border border-slate-300 rounded-lg p-8 gap-5">
+                    <div className="flex  justify-between border border-slate-300 rounded-lg p-8 gap-10">
                         <h2 className="text-2xl font-bold">{stadium.name}</h2>
                         <div className="whitespace-pre-line">{stadium.description}</div>
                         <div className="grid grid-cols-5 gap-2">

@@ -5,6 +5,7 @@ import Signin from "./pages/Signin";
 import AddStadium from "./pages/AddStadium";
 import { useAppContext } from "./contexts/Appcontext";
 import Mystadiums from "./pages/Mystadiums";
+import EditStadium from "./pages/Editstadium";
 
 const Home = () => <h1>Home Page</h1>;
 const About = () => <h1>About Page</h1>;
@@ -34,8 +35,21 @@ const App = () => {
           <Route path="/stadium" element={<Layout>
           <Mystadiums/>
           </Layout>
-          } />
+       
           
+          } />
+          <Route 
+    path="/edit-stadium/:stadiumId" 
+    element={
+        <Layout>
+            <EditStadium/>
+        </Layout>
+    } 
+/>
+
+       
+          
+          } />
           </>)}
         <Route path="/about" element={<About></About>} />
         <Route path="/contact" element={<Contact />} />
