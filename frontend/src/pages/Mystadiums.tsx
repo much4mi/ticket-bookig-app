@@ -19,21 +19,27 @@ const Mystadiums = () => {
     }
 
     return (
-        <div className="space-y-5">
-            <span className="flex justify-between">
-                <h1 className="text-3xl font-bold">My stadium</h1>
-                <Link to="/add-stadium" className="flex bg-blue-600 text-black text-xl font-bold p-2 hover:bg-blue-500">Add stadium</Link>
-            </span>
+        <div className="flex flex-wrap justify-between space-x-5">
+            <h1 className="text-3xl font-bold">My stadium</h1>
+            <Link to="/add-stadium" className="flex bg-blue-600 text-black text-xl font-bold p-2 hover:bg-blue-500">Add stadium</Link>
             <div className="grid grid-cols-1 gap-5">
                 {stadiumData.map((stadium) => (
-                    <div className="flex  justify-between border border-slate-300 rounded-lg p-8 gap-10">
-                        <h2 className="text-2xl font-bold">{stadium.name}</h2>
-                        <div className="whitespace-pre-line">{stadium.description}</div>
+                    <div key={stadium._id} className="flex flex-col justify-between border border-slate-300 rounded-lg p-8 gap-10">
+                        <div>
+                            <h2 className="text-2xl font-bold">{stadium.name}</h2>
+                            <div className="whitespace-pre-line">{stadium.description}</div>
+                        </div>
                         <div className="grid grid-cols-5 gap-2">
                             <div className="border border-slate-300 rounded-sm p-3 items-center">
                                 <BsMap className="mr-1"/>
                                 {stadium.city},{stadium.country}
                             </div>
+                            <div className="border border-slate-300 rounded-sm p-3 items-center">
+                                <TbBuildingStadium className="mr-1"/>
+                                capacity {stadium.capacity}
+                            </div>
+                            
+
                             <div className="border border-slate-300 rounded-sm p-3 items-center">
                                 <BsBuilding className="mr-1"/>
                                 {stadium.type}
@@ -51,9 +57,9 @@ const Mystadiums = () => {
                                 {stadium.starRating}
                             </div>
                         </div>
-                        <span className="flex justify-end">
+                        <div className="flex justify-end">
                             <Link to={`/edit-Stadium/${stadium._id}`} className="flex bg-blue-600 text-black text-xl font-bold p-2 hover:bg-blue-500">View Detail</Link>
-                        </span>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -62,5 +68,4 @@ const Mystadiums = () => {
 };
 
 export default Mystadiums;
-
 

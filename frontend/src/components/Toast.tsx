@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 
-type ToastProps ={
-       message: string;
-       type: "success" | "error";
-       onClose: () => void;
-}
+type ToastProps = {
+    message: string;
+    type: "success" | "error";
+    onClose: () => void;
+};
 
 const Toast = ({ message, type, onClose }: ToastProps) => {
     useEffect(() => {
@@ -17,8 +17,8 @@ const Toast = ({ message, type, onClose }: ToastProps) => {
     }, [onClose]);
 
     const styles = type === "success"
-        ? "flexed top-4 right-4 z-50 rounded-md bg-green-600 text-white max-w-md"
-        : "flexed top-4 right-4 z-50 rounded-md bg-red-600 text-white max-w-md";
+        ? "absolute top-4 right-4 z-50 p-4 rounded-md bg-green-600 text-white max-w-md"
+        : "absolute top-4 right-4 z-50 p-4 rounded-md bg-red-600 text-white max-w-md";
 
     return (
         <div className={styles}>
@@ -28,4 +28,7 @@ const Toast = ({ message, type, onClose }: ToastProps) => {
         </div>
     );
 };
+
 export default Toast;
+
+

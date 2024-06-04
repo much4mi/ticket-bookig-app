@@ -1,17 +1,29 @@
-import Header from "../components/Header";
-import Hero from "../components/Heros"; // Corrected import statement for Hero component
-import Footer from "../components/Footer";
+
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import Header from '../components/Header';
+import Hero from '../components/Heros'; 
+import Footer from '../components/Footer';
+import SearchBar from '../components/SearchBar';
 
 interface Props {
-  children: React.ReactNode; // Corrected prop name to 'children'
+  children: React.ReactNode;
 }
 
 const Layout = ({ children }: Props) => {
+  const location = useLocation(); 
+  const isHomePage = location.pathname === "/"; 
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
       <Hero />
-      <div className="container mx-0 py-10 flex-1">{children}</div> {/* Render children */}
+      {isHomePage && ( 
+        <div className="container mx-auto">
+          <SearchBar />
+        </div>
+      )}
+      <div className="container mx-0 py-10 flex-1">{children}</div>
       <Footer />
     </div>
   );

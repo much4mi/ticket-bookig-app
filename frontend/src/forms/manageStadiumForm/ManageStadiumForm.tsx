@@ -12,6 +12,7 @@ export type StadiumFormdata = {
     name: string;
     city: string;
     country: string;
+    capacity:number;
     description: string;
     type: string;
     pricePerGame: number;
@@ -46,6 +47,7 @@ const ManageStadiumForm = ({ onSave, isLoading,stadium }: Props) => {
         formData.append("name", formDataJson.name);
         formData.append("city", formDataJson.city);
         formData.append("country", formDataJson.country);
+        formData.append("capacity", formDataJson.capacity.toString());
         formData.append("description", formDataJson.description);
         formData.append("type", formDataJson.type);
         formData.append("pricePerGame", formDataJson.pricePerGame.toString());

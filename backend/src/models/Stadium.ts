@@ -4,9 +4,11 @@ import { StadiumType } from "../shared/Types";
 
 const stadiumSchema = new mongoose.Schema<StadiumType>({
 
+    userId:{ type: String, required: true },
     name: { type: String, required: true },
     city: { type: String, required: true },
     country: { type: String, required: true },
+    capacity:{ type: Number, required: true },
     description: { type: String, required: true },
     type: { type: String, required: true },
     adultCount: { type: Number, required: true },

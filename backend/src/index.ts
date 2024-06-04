@@ -7,6 +7,9 @@ import authRoutes from './routes/Auth';
 import path from 'path';
 import {v2 as cloudinary} from 'cloudinary';
 import myStadiumRoutes from  './routes/My-stadiums';
+import  stadiumRoutes from './routes/Stadiums';
+import cookieParser from "cookie-parser";
+
 
 
 cloudinary.config({
@@ -21,19 +24,23 @@ const MONGODB_CONNECTION_STRING = process.env.MONGODB_CONNECTION_STRING as strin
 const mongooseOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
+    serverSelectionTimeoutMS: 30000, 
 };
 
-mongoose.connect(MONGODB_CONNECTION_STRING, mongooseOptions).then(()=>console.log("conneted to database",process.env.MONGODB_CONNECTION_STRING));
+mongoose.connect(MONGODB_CONNECTION_STRING, mongooseOptions)
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin:process.env.FRONTEND_URL,
+    credentials:true,
+}));
 
 app.use(express.static(path.join(__dirname ,"../../frontend/dist")))
 app.use("/api/auth", authRoutes); // Use authRoutes for /api/auth route
 app.use("/api/users", usersRoutes);
 app.use("/api/my-stadiums", myStadiumRoutes);
+app.use("/api/stadium",stadiumRoutes)
 
 app.get("*", (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));

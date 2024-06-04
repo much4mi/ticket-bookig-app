@@ -7,11 +7,11 @@ const AddStadium = () => {
     const { showToast } = useAppContext();
     const { mutate, isLoading } = useMutation(apiClient.addStadium, {
         onSuccess: () => {
-            showToast({ message: "Stadium saved!", type: 'SUCCESS' }); // Use 'SUCCESS' instead of 'success'
+            showToast({ message: "Stadium saved!", type: 'success' }); 
         },
         onError: (err) => {
             console.log(err);
-            showToast({ message: "Error saving stadium", type: 'ERROR' }); // Use 'ERROR' instead of 'error'
+            showToast({ message: "Error saving stadium", type: 'error' }); 
         }
     });
 

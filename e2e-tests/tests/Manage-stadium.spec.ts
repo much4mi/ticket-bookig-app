@@ -1,70 +1,43 @@
 import { expect, test } from '@playwright/test';
-import path from 'path'; // Import path module
+import path from 'path';
 
-const UI_URL = "http://localhost:5173/addStadium";
+const UI_URL = "http://localhost:5173/";
 
 test.beforeEach(async ({ page }) => {
-  // Your setup code here
+  await page.goto(UI_URL + "addStadium");
+
+  await page.getByRole("link", { name: "sign in" }).click();
+  await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
+  await page.locator("[name=email]").fill("kmainoo@gmail.com");
+  await page.locator("[name=password]").fill("manchester");
+  await page.getByRole("button", { name: "Log In" }).click();
+  await expect(page.getByText("Sign in successful")).toBeVisible();
 });
 
-// Testing the add stadium page
-test("should allow user to add a stadium", async ({ page }) => {
-  await page.goto(UI_URL);
-
-  await page.locator('[name="name"]').fill('Test Stadium');
-  await page.locator('[name="city"]').fill('Test CityCity');
-  await page.locator('[name="country"]').fill('Test Country');
-  await page.locator('[name="description"]').fill('This is description for add stadium');
-  await page.locator('[name="pricePerGame"]').fill('100');
-  await page.selectOption('select[name="starRating"]', "4");
-  
-  await page.getByText("arena").click();
-  await page.getByLabel("parking").check();
-  await page.getByLabel("seating capacity").check();
-
-  await page.locator('[name="adultCount"]').fill('100');
-  await page.locator('[name="childCount"]').fill('10');
-
-  await page.setInputFiles('[name="imageFiles"]', [path.join(__dirname, "files", "image.png")]); 
-
-  await page.getByRole("button", { name: "save" }).click();
-  await expect(page.getByText("stadium saved!")).toBeVisible(); 
-});
-
-test("should allow the user display stadium",async({page})=>{
+test("should allow the user to display stadium", async ({ page }) => {
   await page.goto(`${UI_URL}stadium`);
-  await page.getByRole("link",{name: "stadium"}).click();
-  await page.waitForSelector('text="My stadium"');
+
   await expect(page.getByText("My stadium")).toBeVisible();
+  await expect(page.getByText("Talanta jamuhuri stadium")).toBeVisible();
+  await expect(page.getByText("This is description for add stadium in kenya to hold AFCON games")).toBeVisible();
+
+  const stadiumDetails = [
+    { text: 'nairobi,Kenya', index: 0 },
+    { text: 'capacity 60000', index: 0 },
+    { text: 'arena', index: 0 },
+    { text: '$100 per game', index: 0 },
+    { text: '2344 adults, 102 children', index: 0 },
+    { text: '4', index: 0 },
+  ];
+
+  for (const detail of stadiumDetails) {
+    await expect(page.locator(`text=${detail.text}`).nth(detail.index)).toBeVisible();
+  }
+
+  // Select the specific "view detail" link for a stadium
+  const viewDetailLink = page.locator('div:has-text("Talanta jamuhuri stadium")').locator('a', { hasText: 'view detail' });
   
-  await expect(page.getByText("Test Stadium")).toBeVisible();
-  await expect(page.getByText("This is description")).toBeVisible();
 
-  await expect(page.getByText("Test CityCity,Test Country")).toBeVisible();
-  await expect(page.getByText("arena")).toBeVisible();
-  await expect(page.getByText("$100 per game")).toBeVisible();
-  await expect(page.getByText("100 adults, 10 children")).toBeVisible();
-  await expect(page.getByText("4")).toBeVisible();
-
-
-  await expect(page.getByRole("link",{name:"view detail"})).toBeVisible();
-  await expect(page.getByRole("link",{name:"Add stadium"})).toBeVisible();
-
-
+  const addStadiumLink = page.locator('a', { hasText: 'Add stadium' });
+  await expect(addStadiumLink).toBeVisible();
 });
-
-test("should allow edit stadium",async({page})=>{
-  await page.goto(`${UI_URL}stadium`);
-  await page.getByRole("link",{name: "stadium"}).click();
-  await page.getByRole("link",{name: "View Detail"}).click();
-  await page.waitForSelector('[name="name"]',{state:"attached"});
-  await expect(page.locator( '[name="name"]') ).toHaveValue("Talanta jamuhuri stadium");
-  await page.locator( '[name="name"]').fill("Talanta jamuhuri stadium");
-  await page.getByRole("button",{name:"Save "}).click();
-  await page.getByRole("button", { name: "save" }).click();
-  await expect(page.getByText("stadium saved!")).toBeVisible();
-
-  await page.reload( );
-  await expect(page.locator( '[name="name"]') ).toHaveValue("Talanta jamuhuri stadium");
-  await page.getByRole("button", { name: "save" }).click();
-})

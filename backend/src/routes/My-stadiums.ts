@@ -4,6 +4,7 @@ import multer from "multer";
 import Stadium from '../models/Stadium';
 import { StadiumType } from '../shared/Types';
 import { body } from 'express-validator';
+import verifyToken from '../middleware/Auth';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
@@ -12,12 +13,14 @@ const upload = multer({
     limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit for file size
 });
 
+
 //api/my-stadiums
 
-router.post("/", [
+router.post("/",verifyToken, [
     body("name").notEmpty().withMessage("Name is required"),
     body("city").notEmpty().withMessage("City is required"),
     body("country").notEmpty().withMessage("Country is required"),
+    body("capacity").notEmpty().isNumeric().withMessage("capacity is required and must be a number"),
     body("description").notEmpty().withMessage("Description is required"),
     body("type").notEmpty().withMessage("Stadium type is required"),
     body("pricePerGame").notEmpty().isNumeric().withMessage("pricePerGame is required and must be a number"),
@@ -32,6 +35,9 @@ router.post("/", [
         const imageUrls = await uploadImageUrls(imageFiles);
         newStadium.imageUrls = imageUrls;
         newStadium.lastUpdated = new Date();
+        newStadium.userId=req.userId;
+
+        
 
         // Save new stadium in the database
         const stadium = new Stadium(newStadium);
@@ -46,7 +52,7 @@ router.post("/", [
     }
 });
 
-router.get("/" , async(req:Request,res:Response)=>{
+router.get("/" ,verifyToken, async(req:Request,res:Response)=>{
     
     
     try {
@@ -58,10 +64,11 @@ router.get("/" , async(req:Request,res:Response)=>{
     }
 });
 
-router.get("/:id" , async(req:Request,res:Response)=>{
+router.get("/:id" ,verifyToken, async(req:Request,res:Response)=>{
     const id = req.params.id.toString();
     try {
-        const stadium = await Stadium.findById(id);
+        const stadium = await Stadium.findById({_id:id,userId:req.userId});
+
         res.json(stadium);
         
     } catch (error) {
@@ -69,14 +76,15 @@ router.get("/:id" , async(req:Request,res:Response)=>{
     }
 });
 
-router.put("/:stadiumId",upload.array("imageFiles"),async(req:Request,res:Response)=>{
+router.put("/:stadiumId", verifyToken,upload.array("imageFiles"),async(req:Request,res:Response)=>{
 
     try {
         const updatedStadium:StadiumType=req.body
         updatedStadium.lastUpdated= new  Date();
 
         const stadium = await Stadium.findByIdAndUpdate({
-            _id : req.params.stadiumId
+            _id : req.params.stadiumId,
+            userId:req.userId
         },updatedStadium,{new:true} ) ;
         
         if (!stadium){
@@ -90,7 +98,7 @@ router.put("/:stadiumId",upload.array("imageFiles"),async(req:Request,res:Respon
                 await stadium.save();
                 res.status(201).json(stadium);
     } catch (error) {
-        res.status(500).json({message:"something went wrongle"})
+        res.status(500).json({message:"something went wrong"})
     }
 })
 
@@ -110,3 +118,5 @@ async function uploadImageUrls(imageFiles: Express.Multer.File[]) {
 }
 
 export default router;
+
+

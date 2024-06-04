@@ -1,11 +1,13 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import express, { Request, Response, Router } from 'express';
+import express, { Request, Response } from 'express';
 import { check, validationResult } from 'express-validator';
 import User from '../models/User';
+import verifyToken from '../middleware/Auth';
 
 const router = express.Router();
 
+// Login route
 router.post("/login", [
     check("email", "Email is required").isEmail(),
     check("password", "Password with 6 or more characters is required").isLength({ min: 6 }),
@@ -43,10 +45,18 @@ router.post("/login", [
         return res.status(500).json({ message: "Something went wrong" });
     }
 });
+
+// Validate token route
+router.get("/validate-token", verifyToken, (req: Request, res: Response) => {
+    res.status(200).json({ userId: req.userId });
+});
+
+// Logout route
 router.post("/logout", (req: Request, res: Response) => {
     res.cookie("auth_token", "", {
-        expires: new Date(0)
+        expires: new Date(0),
     });
+    res.status(200).send();
 });
 
 export default router;
